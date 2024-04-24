@@ -22,8 +22,14 @@ def format_link(cell_content):
     return cell_content  
 data = load_data()
 
+img = {}
+
+for col_name in data.columns:
+    image_path = "assets/" + col_name + ".jpg"
+    img[col_name] = image_path
+
 # Streamlit UI components
-st.header('I have an unhouse patron or I need help with...')
+st.header('I have an unhoused patron or I need help with...')
 
 # # Display column headers as icons/links
 # col_links = st.columns(len(data.columns))
@@ -41,32 +47,64 @@ st.write('''<style>
 }
 </style>''', unsafe_allow_html=True)
 
-with st.container():
+# with st.container():
 
+#     # Assuming 'data' is your DataFrame and it has exactly 9 columns
+#     columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
+    
+#     # Create three Streamlit columns
+#     col1, col2, col3 = st.columns(3)
+    
+#     # Display the first segment of columns in the first Streamlit column
+#     with col1:
+#         for i in range(columns_per_segment):
+#             col_name = data.columns[i]
+#             if st.button(st.image(img[col_name]), key=f"col1_{i}", use_container_width=True):
+#                 st.session_state['selected_column'] = col_name
+    
+#     # Display the second segment of columns in the second Streamlit column
+#     with col2:
+#         for i in range(columns_per_segment, 2 * columns_per_segment):
+#             col_name = data.columns[i]
+#             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
+#                 st.session_state['selected_column'] = col_name
+    
+#     # Display the third segment of columns in the third Streamlit column
+#     with col3:
+#         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
+#             col_name = data.columns[i]
+#             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
+#                 st.session_state['selected_column'] = col_name
+
+
+with st.container():
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
     columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
-    
+
     # Create three Streamlit columns
     col1, col2, col3 = st.columns(3)
-    
+
     # Display the first segment of columns in the first Streamlit column
     with col1:
         for i in range(columns_per_segment):
             col_name = data.columns[i]
+            st.image(img[col_name])
             if st.button(col_name, key=f"col1_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
-    
+
     # Display the second segment of columns in the second Streamlit column
     with col2:
         for i in range(columns_per_segment, 2 * columns_per_segment):
             col_name = data.columns[i]
+            st.image(img[col_name])
             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
-    
+
     # Display the third segment of columns in the third Streamlit column
     with col3:
         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
             col_name = data.columns[i]
+            st.image(img[col_name])
             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
