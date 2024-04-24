@@ -29,7 +29,7 @@ for col_name in data.columns:
     img[col_name] = image_path
 
 # Streamlit UI components
-st.header('I have an unhoused patron or I need help with...')
+st.title('I have an unhoused patron or I need help with...')
 
 # # Display column headers as icons/links
 # col_links = st.columns(len(data.columns))
