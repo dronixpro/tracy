@@ -32,6 +32,15 @@ st.header('I have an unhouse patron or I need help with...')
 #         if st.button(col_name,use_container_width=True):
 #             st.session_state['selected_column'] = col_name
 
+st.write('''<style>
+
+[data-testid="column"] {
+    width: calc(33.3333% - 1rem) !important;
+    flex: 1 1 calc(33.3333% - 1rem) !important;
+    min-width: calc(33% - 1rem) !important;
+}
+</style>''', unsafe_allow_html=True)
+
 with st.container():
 
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
