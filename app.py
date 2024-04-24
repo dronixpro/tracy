@@ -22,7 +22,7 @@ def format_link(cell_content):
 data = load_data()
 
 # Streamlit UI components
-st.header('I have an unhouse patron or I need help with...')
+st.header('I have an unhoused patron or I need help with...')
 
 # Display column headers as icons/links
 col_links = st.columns(len(data.columns))
