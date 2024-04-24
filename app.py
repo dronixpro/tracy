@@ -88,7 +88,7 @@ with st.container():
     with col1:
         for i in range(columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name],use_column_width='always')
+            st.image(img[col_name],use_column_width='auto')
             if st.button(col_name, key=f"col1_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
@@ -96,7 +96,7 @@ with st.container():
     with col2:
         for i in range(columns_per_segment, 2 * columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name],use_column_width='always')
+            st.image(img[col_name],use_column_width='auto')
             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
@@ -105,10 +105,16 @@ with st.container():
     with col3:
         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name],use_column_width='always')
+            st.image(img[col_name],use_column_width='auto')
             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
-
+with st.container():
+    # Display rows of the selected column
+    if 'selected_column' in st.session_state:
+        st.write(f"### {st.session_state['selected_column']} Data")
+        for item in data[st.session_state['selected_column']].dropna().tolist():
+            formatted_item = format_link(str(item))
+            st.markdown(formatted_item, unsafe_allow_html=True)
 
 
 
