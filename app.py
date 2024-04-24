@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-#st. set_page_config(layout="wide")
+st. set_page_config(layout="wide")
 # Load the Excel file
 @st.cache_data
 def load_data():
