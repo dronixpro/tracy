@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-st. set_page_config(layout="wide")
+#st. set_page_config(layout="wide")
 # Load the Excel file
 @st.cache_data
 def load_data():
@@ -31,12 +31,6 @@ for col_name in data.columns:
 # Streamlit UI components
 st.title('I have an unhoused patron or I need help with...')
 
-# # Display column headers as icons/links
-# col_links = st.columns(len(data.columns))
-# for i, col_name in enumerate(data.columns):
-#     with col_links[i]:
-#         if st.button(col_name,use_container_width=True):
-#             st.session_state['selected_column'] = col_name
 
 st.write('''<style>
 
@@ -88,7 +82,7 @@ with st.container():
     with col1:
         for i in range(columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name])
+            st.image(img[col_name],use_column_width='always')
             if st.button(col_name, key=f"col1_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
@@ -96,7 +90,7 @@ with st.container():
     with col2:
         for i in range(columns_per_segment, 2 * columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name])
+            st.image(img[col_name],use_column_width='always')
             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
@@ -104,7 +98,7 @@ with st.container():
     with col3:
         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
             col_name = data.columns[i]
-            st.image(img[col_name])
+            st.image(img[col_name],use_column_width='always')
             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
