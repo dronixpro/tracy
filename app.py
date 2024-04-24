@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-st. set_page_config(layout="wide")
+#st. set_page_config(layout="wide")
 # Load the Excel file
 @st.cache_data
 def load_data():
@@ -69,7 +69,13 @@ st.write('''<style>
 #             col_name = data.columns[i]
 #             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
 #                 st.session_state['selected_column'] = col_name
-
+with st.container():
+    # Display rows of the selected column
+    if 'selected_column' in st.session_state:
+        st.write(f"### {st.session_state['selected_column']} Data")
+        for item in data[st.session_state['selected_column']].dropna().tolist():
+            formatted_item = format_link(str(item))
+            st.markdown(formatted_item, unsafe_allow_html=True)
 
 with st.container():
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
@@ -94,6 +100,7 @@ with st.container():
             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
 
+
     # Display the third segment of columns in the third Streamlit column
     with col3:
         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
@@ -103,11 +110,8 @@ with st.container():
                 st.session_state['selected_column'] = col_name
 
 
-with st.container():
-    # Display rows of the selected column
-    if 'selected_column' in st.session_state:
-        st.write(f"### {st.session_state['selected_column']} Data")
-        for item in data[st.session_state['selected_column']].dropna().tolist():
-            formatted_item = format_link(str(item))
-            st.markdown(formatted_item, unsafe_allow_html=True)
+
+
+
+
 
