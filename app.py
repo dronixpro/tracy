@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-from st_btn_group import st_btn_group
 
 st. set_page_config(layout="wide")
 # Load the Excel file
@@ -31,13 +30,6 @@ for i, col_name in enumerate(data.columns):
     with col_links[i]:
         if st.button(col_name,use_container_width=True):
             st.session_state['selected_column'] = col_name
-
-# Display column headers as icons/links
-# buttons = [{"label": col_name, "value": col_name} for col_name in data.columns]
-
-# clicked = st_btn_group(buttons)
-# if clicked:
-#     st.session_state['selected_column'] = clicked
 
 # Display rows of the selected column
 if 'selected_column' in st.session_state:
