@@ -111,7 +111,7 @@ with st.container():
                     st.markdown(f"**Substance Misuse: {str(row['Substance Misuse']).strip()}**")
                     st.markdown(f"**Healthcare: {str(row['Healthcare']).strip()}**")
 
-with st.container(border=True):
+with st.container():
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
     columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
 
