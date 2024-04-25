@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 
-st.set_page_config(layout="centered")
+st.set_page_config(layout="wide")
 # Load the Excel file
 @st.cache_data
 def load_data():
@@ -69,9 +69,49 @@ st.write('''<style>
 #             col_name = data.columns[i]
 #             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
 #                 st.session_state['selected_column'] = col_name
+with st.container(): 
+    text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
+    
+    if text_search:
+        # Initialize a combined mask with False values for all rows
+        combined_mask = pd.Series([False] * len(data))
+    
+        # Loop through all columns in the DataFrame
+        for column in data.columns:
+            # Update the combined mask to include rows where the text_search is found in any part of the current column
+            # Ensure the column data is string type to use str.contains
+            combined_mask |= data[column].astype(str).str.contains(text_search, na=False, case=False, regex=True)
+    
+        # Filter the DataFrame using the combined mask
+        data_search = data[combined_mask]
+    
+        # Define the number of cards per row
+        N_cards_per_row = 10
+        
+    
+        # Check if there is filtered data to display
+        if not data_search.empty:
+            # Reset the index to properly use iterrows
+            for n_row, row in data_search.reset_index().iterrows():
+                i = n_row % N_cards_per_row  # Determine the column to place the card based on the row number
+                if i == 0:
+                    st.write("---")  # Separator for visual clarity
+                    cols = st.columns(N_cards_per_row, gap="large")  # Define the columns for cards
+    
+                # Display the card in the appropriate column
+                with cols[i]:
+                    # Display selected data fields as markdown in cards, ensuring all data is treated as string
+                    st.markdown(f"**Counseling & Community: {str(row['Counseling & Community']).strip()}**")
+                    st.markdown(f"*Food: {str(row['Food']).strip()}*")
+                    st.markdown(f"**Staff Resources & Training: {str(row['Staff Resources & Training']).strip()}**")
+                    st.markdown(f"**Jobs & Interviews: {str(row['Jobs & Interviews']).strip()}**")
+                    st.markdown(f"**Crisis: {str(row['Crisis']).strip()}**")
+                    st.markdown(f"**Public Transit: {str(row['Public Transit']).strip()}**")
+                    st.markdown(f"**Shelter: {str(row['Shelter']).strip()}**")
+                    st.markdown(f"**Substance Misuse: {str(row['Substance Misuse']).strip()}**")
+                    st.markdown(f"**Healthcare: {str(row['Healthcare']).strip()}**")
 
-
-with st.container():
+with st.container(border=True):
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
     columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
 
