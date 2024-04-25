@@ -5,7 +5,7 @@ import os
 
 st.set_page_config(layout="wide")
 # Load the Excel file
-@st.cache
+@st.cache_data
 def load_data():
     filepath = os.path.join(os.getcwd(), 'APP Layout.xlsx')
     return pd.read_excel(filepath)
