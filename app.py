@@ -4,7 +4,7 @@ import os
 import base64
 
 
-st.set_page_config(layout="centered")
+st.set_page_config(layout="wide")
 
 if 'selected_column' in st.session_state:
     del st.session_state['selected_column']
