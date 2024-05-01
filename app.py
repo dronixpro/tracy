@@ -4,7 +4,7 @@ import os
 import base64
 
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
 
 if 'selected_column' in st.session_state:
     del st.session_state['selected_column']
@@ -94,64 +94,63 @@ with st.container():
                     st.markdown(f"**Substance Misuse: {str(row['Substance Misuse']).strip()}**")
                     st.markdown(f"**Healthcare: {str(row['Healthcare']).strip()}**")
 
-# with st.container():
-#     # Assuming 'data' is your DataFrame and it has exactly 9 columns
-#     columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
+with st.container():
+    # Assuming 'data' is your DataFrame and it has exactly 9 columns
+    columns_per_segment = 9 // 3  # Calculate columns per Streamlit column
 
-#     # Create three Streamlit columns
-#     col1, col2, col3 = st.columns(3)
+    # Create three Streamlit columns
+    col1, col2, col3 = st.columns(3)
 
-#     # Display the first segment of columns in the first Streamlit column
-#     with col1:
-#         for i in range(columns_per_segment):
-#             col_name = data.columns[i]
-#             st.image(img[col_name],use_column_width='auto')
-#             if st.button(col_name, key=f"col1_{i}", use_container_width=True):
-#                 st.session_state['selected_column'] = col_name
-
-#     # Display the second segment of columns in the second Streamlit column
-#     with col2:
-#         for i in range(columns_per_segment, 2 * columns_per_segment):
-#             col_name = data.columns[i]
-#             st.image(img[col_name],use_column_width='auto')
-#             if st.button(col_name, key=f"col2_{i}", use_container_width=True):
-#                 st.session_state['selected_column'] = col_name
-
-
-#     # Display the third segment of columns in the third Streamlit column
-#     with col3:
-#         for i in range(2 * columns_per_segment, 3 * columns_per_segment):
-#             col_name = data.columns[i]
-#             st.image(img[col_name],use_column_width='auto')
-#             if st.button(col_name, key=f"col3_{i}", use_container_width=True):
-#                 st.session_state['selected_column'] = col_name
-
-
-# Assuming 'data' and 'img' are predefined data structures where
-# 'data' is a DataFrame and 'img' is a dictionary with image data.
-columns_per_segment = len(data.columns) // 3  # Calculate columns per Streamlit column
-
-# Create five Streamlit columns
-all_columns = st.columns(5)
-
-# We'll use only the middle three columns (indices 1, 2, and 3)
-middle_columns = all_columns[1:4]
-
-for index, col in enumerate(middle_columns):
-    # Calculate the range of column indices for each Streamlit column
-    start_index = index * columns_per_segment
-    end_index = start_index + columns_per_segment
-
-    # Ensure we don't go out of bounds if data.columns has fewer than total needed items
-    end_index = min(end_index, len(data.columns))
-
-    with col:
-        for i in range(start_index, end_index):
+    # Display the first segment of columns in the first Streamlit column
+    with col1:
+        for i in range(columns_per_segment):
             col_name = data.columns[i]
-            # Each column displays an image and a button corresponding to a data column
-            st.image(img[col_name], use_column_width='always')
-            if st.button(col_name, key=f"middle_{index}_{i}", use_container_width=True):
+            st.image(img[col_name],use_column_width='auto')
+            if st.button(col_name, key=f"col1_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
+
+    # Display the second segment of columns in the second Streamlit column
+    with col2:
+        for i in range(columns_per_segment, 2 * columns_per_segment):
+            col_name = data.columns[i]
+            st.image(img[col_name],use_column_width='auto')
+            if st.button(col_name, key=f"col2_{i}", use_container_width=True):
+                st.session_state['selected_column'] = col_name
+
+
+    # Display the third segment of columns in the third Streamlit column
+    with col3:
+        for i in range(2 * columns_per_segment, 3 * columns_per_segment):
+            col_name = data.columns[i]
+            st.image(img[col_name],use_column_width='auto')
+            if st.button(col_name, key=f"col3_{i}", use_container_width=True):
+                st.session_state['selected_column'] = col_name
+
+
+
+# columns_per_segment = len(data.columns) // 3  
+
+
+# all_columns = st.columns(5)
+
+
+# middle_columns = all_columns[1:4]
+
+# for index, col in enumerate(middle_columns):
+#     # Calculate the range of column indices for each Streamlit column
+#     start_index = index * columns_per_segment
+#     end_index = start_index + columns_per_segment
+
+#     # Ensure we don't go out of bounds if data.columns has fewer than total needed items
+#     end_index = min(end_index, len(data.columns))
+
+#     with col:
+#         for i in range(start_index, end_index):
+#             col_name = data.columns[i]
+#             # Each column displays an image and a button corresponding to a data column
+#             st.image(img[col_name], use_column_width='always')
+#             if st.button(col_name, key=f"middle_{index}_{i}", use_container_width=True):
+#                 st.session_state['selected_column'] = col_name
 
 
               
