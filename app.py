@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-from streamlit_card import card
 import base64
 
 
