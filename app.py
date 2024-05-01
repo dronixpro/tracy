@@ -79,7 +79,7 @@ with st.container():
                 i = n_row % N_cards_per_row  # Determine the column to place the card based on the row number
                 if i == 0:
                     st.write("---")  # Separator for visual clarity
-                    cols = st.columns(N_cards_per_row, gap="large")  # Define the columns for cards
+                    cols = st.columns(N_cards_per_row, gap="small")  # Define the columns for cards
     
                 # Display the card in the appropriate column
                 with cols[i]:
