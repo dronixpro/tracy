@@ -40,14 +40,11 @@ for col_name in data.columns:
     img_data[col_name] = "data:image/png;base64," + encoded.decode("utf-8")
 
 
-
-
 # Streamlit UI components
 st.title('I have an unhoused patron or I need help with...')
 
 
-st.write('''<style>
-
+st.markdown('''<style>
 [data-testid="column"] {
     width: calc(20% - 1rem) !important;
     flex: 1 1 calc(20% - 1rem) !important;
