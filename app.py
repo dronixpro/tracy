@@ -2,12 +2,14 @@ import streamlit as st
 import pandas as pd
 import os
 import base64
+from nltk.corpus import wordnet as wn
+import nltk
+from fuzzywuzzy import fuzz
 
 
 st.set_page_config(layout="centered")
 
-if 'selected_column' in st.session_state:
-    del st.session_state['selected_column']
+
 # Load the Excel file
 @st.cache_data
 def load_data():
@@ -44,9 +46,10 @@ st.title('I have an unhoused patron or I need help with...')
 
 
 st.markdown('''<style>
+        
+
 button {
-    height: 0.5em;
-    font-size: 0.25em;
+    height: 1em;
 }
 
 
@@ -57,48 +60,90 @@ button {
 }
 </style>''', unsafe_allow_html=True)
 
+custom_synonyms = {
+    'jobs': ['employment', 'work', 'career'],
+    'food': ['nutrition', 'meals', 'groceries'],
+    'shelter': ['housing', 'accommodation', 'lodging'],
+    'bus':['transportation','transit','mta'],
+    'transit':['bus']
+}
 
-with st.container(): 
+# Ensure nltk resources are downloaded
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+# Define additional synonyms for specific terms
+custom_synonyms = {
+    'jobs': ['employment', 'work', 'career'],
+    'food': ['nutrition', 'meals', 'groceries'],
+    'shelter': ['housing', 'accommodation', 'lodging']
+}
+
+# Function to find synonyms using WordNet and custom synonyms
+def find_synonyms(word, n=3):
+    synonyms = set()
+    
+    # Add custom synonyms
+    if word in custom_synonyms:
+        synonyms.update(custom_synonyms[word])
+    
+    # Add WordNet synonyms
+    for syn in wn.synsets(word):
+        for lemma in syn.lemmas():
+            synonyms.add(lemma.name().replace('_', ' '))
+    
+    return list(synonyms)[:n]
+
+# Function to apply fuzzy matching and return best matches
+def find_best_matches(df, search_terms, threshold=80):
+    results = []
+    
+    for term in search_terms:
+        for column in df.columns:
+            for idx, value in df[column].dropna().items():
+                similarity_score = fuzz.partial_ratio(term.lower(), str(value).lower())
+                if similarity_score >= threshold:
+                    results.append((similarity_score, idx, column, str(value).strip()))
+    
+    # Sort results by similarity score in descending order
+    results = sorted(results, key=lambda x: x[0], reverse=True)
+    return results
+
+# Function to highlight the matching terms
+def highlight_matches(text, search_terms):
+    for term in search_terms:
+        text = text.replace(term, f"<mark>{term}</mark>")
+    return text
+
+# Function to display the best matching individual pieces of information
+def display_search_results(results, search_terms, N_cards_per_row=1):
+    if results:
+        for n_row, (score, idx, column, value) in enumerate(results):
+            i = n_row % N_cards_per_row
+            if i == 0:
+                st.write("---")
+                cols = st.columns(N_cards_per_row, gap="small")
+            
+            with cols[i]:
+                highlighted_value = highlight_matches(value, search_terms)
+                st.markdown(f"**{column}:** {highlighted_value}", unsafe_allow_html=True)
+                st.write('---')
+
+
+with st.container():
     text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
-    
+
     if text_search:
-        # Initialize a combined mask with False values for all rows
-        combined_mask = pd.Series([False] * len(data))
-    
-        # Loop through all columns in the DataFrame
-        for column in data.columns:
-            # Update the combined mask to include rows where the text_search is found in any part of the current column
-            # Ensure the column data is string type to use str.contains
-            combined_mask |= data[column].astype(str).str.contains(text_search, na=False, case=False, regex=True)
-    
-        # Filter the DataFrame using the combined mask
-        data_search = data[combined_mask]
-    
-        # Define the number of cards per row
-        N_cards_per_row = 10
-        
-    
-        # Check if there is filtered data to display
-        if not data_search.empty:
-            # Reset the index to properly use iterrows
-            for n_row, row in data_search.reset_index().iterrows():
-                i = n_row % N_cards_per_row  # Determine the column to place the card based on the row number
-                if i == 0:
-                    st.write("---")  # Separator for visual clarity
-                    cols = st.columns(N_cards_per_row, gap="small")  # Define the columns for cards
-    
-                # Display the card in the appropriate column
-                with cols[i]:
-                    # Display selected data fields as markdown in cards, ensuring all data is treated as string
-                    st.markdown(f"**Counseling & Community: {str(row['Counseling & Community']).strip()}**")
-                    st.markdown(f"*Food: {str(row['Food']).strip()}*")
-                    st.markdown(f"**Staff Resources & Training: {str(row['Staff Resources & Training']).strip()}**")
-                    st.markdown(f"**Jobs & Interviews: {str(row['Jobs & Interviews']).strip()}**")
-                    st.markdown(f"**Crisis: {str(row['Crisis']).strip()}**")
-                    st.markdown(f"**Public Transit: {str(row['Public Transit']).strip()}**")
-                    st.markdown(f"**Shelter: {str(row['Shelter']).strip()}**")
-                    st.markdown(f"**Substance Misuse: {str(row['Substance Misuse']).strip()}**")
-                    st.markdown(f"**Healthcare: {str(row['Healthcare']).strip()}**")
+        # Find synonyms and include the original search term
+        synonyms = find_synonyms(text_search, n=3)
+        synonyms.append(text_search)
+
+        # Find the best matches
+        best_matches = find_best_matches(data, synonyms)
+
+        # Display search results using the custom function
+        display_search_results(best_matches, synonyms)
+
 
 with st.container():
     # Assuming 'data' is your DataFrame and it has exactly 9 columns
