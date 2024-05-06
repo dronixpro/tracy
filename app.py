@@ -48,9 +48,9 @@ st.title('I have an unhoused patron or I need help with...')
 st.markdown('''<style>
         
 
-button {
-    height: 3em;
-}
+#button {
+#    height: 3em;
+#}
 
 
 [data-testid="column"] {
