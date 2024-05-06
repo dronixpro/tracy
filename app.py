@@ -49,7 +49,7 @@ st.markdown('''<style>
         
 
 button {
-    height: 1em;
+    height: 3em;
 }
 
 
