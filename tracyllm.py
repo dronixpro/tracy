@@ -56,7 +56,7 @@ def query_huggingface_api(prompt):
     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
     payload = {
         "inputs": prompt,
-        "parameters": {"max_length": 100, "temperature": 0.5}
+        "parameters": {"max_length": 100, "temperature": 0.01}
     }
     
     try:
