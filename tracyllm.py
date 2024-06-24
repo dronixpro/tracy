@@ -83,7 +83,7 @@ def format_text(text):
 
     return formatted_text.strip()
 
-def main(query):
+def main(query,HUGGINGFACE_API_TOKEN):
     model = load_model()
     headers, data = read_excel()
     vector_db = create_vector_db(data, model)
