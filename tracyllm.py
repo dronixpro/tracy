@@ -9,12 +9,12 @@ from dotenv import load_dotenv
 
 
 # Load environment variables
-load_dotenv()
+#load_dotenv()
 
 # Get API token from environment variable
-HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
-if not HUGGINGFACE_API_TOKEN:
-    raise ValueError("HUGGINGFACE_API_TOKEN is not set in the environment variables")
+#HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
+#if not HUGGINGFACE_API_TOKEN:
+#    raise ValueError("HUGGINGFACE_API_TOKEN is not set in the environment variables")
 
 # Constants
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
