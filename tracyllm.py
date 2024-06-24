@@ -98,7 +98,7 @@ def main(query):
         
         return text
     else:
-        return "Error: Unable to generate a response"
+        return vector_db
 
 if __name__ == "__main__":
     example_query = "What resources are available for mental health support?"
