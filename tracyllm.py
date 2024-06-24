@@ -50,7 +50,7 @@ def create_rag_prompt(query, vector_db, model, top_k=3):
 ---------------------
 {context}
 ---------------------
-Given the resource information above and not prior knowledge, answer the question as a librarian: {query}"""
+Given the resource information above and not prior knowledge, answer the question as a librarian, avoid markdown formatting: {query}"""
 
 def query_huggingface_api(prompt):
     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
