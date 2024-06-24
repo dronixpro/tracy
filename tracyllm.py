@@ -100,8 +100,3 @@ def main(query):
     else:
         return vector_db
 
-if __name__ == "__main__":
-    example_query = "What resources are available for mental health support?"
-    result = main(example_query)
-    #print(f"Query: {example_query}")
-    #print(f"Response: {result}")
