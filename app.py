@@ -6,7 +6,7 @@ from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
 st.set_page_config(layout="centered")
-HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
+
 # Load the Excel file
 @st.cache_data
 def load_data():
@@ -56,7 +56,7 @@ with st.container():
     text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
 
     if text_search:
-        results = tracyllm_main(text_search,HUGGINGFACE_API_TOKEN)
+        results = tracyllm_main(text_search)
         display_search_results(results)
 
 with st.container():
