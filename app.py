@@ -51,9 +51,9 @@ button { height: 1em; }
 
 def display_search_results(results):
     st.write(results)
-    st.write(---)
+    st.write('---')
     st.markdown(results, unsafe_allow_html=True)
-    st.write(---)
+    st.write('---')
 
 with st.container():
     text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
