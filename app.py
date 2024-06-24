@@ -56,7 +56,7 @@ with st.container():
     text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
 
     if text_search:
-        results = tracyllm_main(text_search)
+        results = tracyllm_main(text_search,HUGGINGFACE_API_TOKEN)
         display_search_results(results)
 
 with st.container():
