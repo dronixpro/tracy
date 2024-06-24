@@ -6,7 +6,7 @@ from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
 st.set_page_config(layout="centered")
-
+HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 # Load the Excel file
 @st.cache_data
 def load_data():
