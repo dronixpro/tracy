@@ -5,7 +5,7 @@ import re
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from functools import lru_cache
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 
 # Load environment variables
