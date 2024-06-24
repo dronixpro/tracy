@@ -15,7 +15,7 @@ from functools import lru_cache
 #HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
 #if not HUGGINGFACE_API_TOKEN:
 #    raise ValueError("HUGGINGFACE_API_TOKEN is not set in the environment variables")
-
+HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 # Constants
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
 API_URL = "https://api-inference.huggingface.co/models/gpt2"
@@ -83,7 +83,7 @@ def format_text(text):
 
     return formatted_text.strip()
 
-def main(query,HUGGINGFACE_API_TOKEN):
+def main(query):
     model = load_model()
     headers, data = read_excel()
     vector_db = create_vector_db(data, model)
