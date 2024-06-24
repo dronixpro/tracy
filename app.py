@@ -50,7 +50,7 @@ button { height: 1em; }
 </style>''', unsafe_allow_html=True)
 
 def display_search_results(results):
-    st.write(results)
+    st.html(results)
     st.write('---')
     st.markdown(results, unsafe_allow_html=True)
     st.write('---')
