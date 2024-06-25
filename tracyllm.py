@@ -19,7 +19,7 @@ import streamlit as st
 HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 # Constants
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
-API_URL = "https://api-inference.huggingface.co/models/gpt2"
+API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-hf"
 MODEL_NAME = 'all-MiniLM-L6-v2'
 
 @lru_cache(maxsize=1)
