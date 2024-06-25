@@ -40,14 +40,20 @@ img = load_images()
 
 st.title('I have an unhoused patron or I need help with...')
 
-st.markdown('''<style>
-button { height: 1em; }
-[data-testid="column"] {
-    width: calc(20% - 1rem) !important;
-    flex: 1 1 calc(20% - 1rem) !important;
-    min-width: calc(20% - 1rem) !important;
-}
-</style>''', unsafe_allow_html=True)
+st.markdown("""
+<style>
+    .stButton > button {
+        width: auto !important;
+        white-space: nowrap;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 def display_search_results(results):
     st.write('---')
