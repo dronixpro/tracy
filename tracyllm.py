@@ -98,5 +98,5 @@ def main(query):
         
         return text
     else:
-        return vector_db
+        return "I'm sorry, I couldn't understand. Please rephrase your response"
 
