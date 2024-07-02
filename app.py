@@ -64,7 +64,7 @@ st.markdown("""
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     .stButton > button:active {
-        background-color: #3e8e41;
+        background-color: #a2e8e6;
     }
 
     /* Column Sizing */
