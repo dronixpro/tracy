@@ -42,15 +42,41 @@ st.title('I have an unhoused patron or I need help with...')
 
 st.markdown("""
 <style>
+    /* Button Styling */
     .stButton > button {
-        width: auto !important;
-        white-space: nowrap;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        display: inline-block;
+        width: auto;
+        min-width: fit-content;
         max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        height: auto;
+        min-height: 40px;
+        white-space: normal !important;
+        word-wrap: break-word;
+        padding: 0.5rem 1rem;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    .stButton > button:hover {
+        background-color: #45a049;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .stButton > button:active {
+        background-color: #3e8e41;
+    }
+
+    /* Column Sizing */
+    [data-testid="column"] {
+        width: calc(20% - 1rem) !important;
+        flex: 1 1 calc(20% - 1rem) !important;
+        min-width: calc(20% - 1rem) !important;
+    }
+
+    /* Additional styling for consistency */
+    button {
+        height: auto;  /* Changed from 1em to auto for consistency with other button styles */
     }
 </style>
 """, unsafe_allow_html=True)
