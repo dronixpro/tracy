@@ -52,7 +52,7 @@ st.markdown("""
         white-space: normal !important;
         word-wrap: break-word;
         padding: 0.5rem 1rem;
-        background-color: #a2e8e6;
+        background-color: #67a6a5;
         color: white;
         font-size: 16px;
         border: none;
