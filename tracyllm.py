@@ -6,25 +6,17 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from functools import lru_cache
 import streamlit as st
-#from dotenv import load_dotenv
 
 
-# Load environment variables
-#load_dotenv()
-
-# Get API token from environment variable
-#HUGGINGFACE_API_TOKEN = os.getenv('HUGGINGFACE_API_TOKEN')
-#if not HUGGINGFACE_API_TOKEN:
-#    raise ValueError("HUGGINGFACE_API_TOKEN is not set in the environment variables")
-HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
-# Constants
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
 API_URL = "https://api-inference.huggingface.co/models/gpt2"
-MODEL_NAME = 'all-MiniLM-L6-v2'
+SENTENCE_TRANSFORMER_MODEL = 'all-MiniLM-L6-v2'
+
+HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 
 @lru_cache(maxsize=1)
-def load_model():
-    return SentenceTransformer(MODEL_NAME)
+def load_sentence_transformer():
+    return SentenceTransformer(SENTENCE_TRANSFORMER_MODEL)
 
 @lru_cache(maxsize=1)
 def read_excel():
@@ -50,13 +42,13 @@ def create_rag_prompt(query, vector_db, model, top_k=3):
 ---------------------
 {context}
 ---------------------
-Given the resource information above and not prior knowledge, answer the question as a librarian, avoid markdown formatting: {query}"""
+Given the resource information above and not prior knowledge, answer the question as a librarian. Provide a concise response without using markdown formatting or headers: {query}"""
 
 def query_huggingface_api(prompt):
     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}"}
     payload = {
         "inputs": prompt,
-        "parameters": {"max_length": 100, "temperature": 0.01}
+        "parameters": {"max_length": 150, "temperature": 0.7, "top_p": 0.9, "do_sample": True}
     }
     
     try:
@@ -64,28 +56,29 @@ def query_huggingface_api(prompt):
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
-        print(f"Error querying Hugging Face API: {e}")
+        st.error(f"Error querying Hugging Face API: {e}")
         return None
-    
+
 def format_text(text):
-    # Remove content after the specified phrase
     cut_off_phrase = "Given the resource information above and not prior knowledge"
     text = text.split(cut_off_phrase)[0].strip()
-
-    # Function to add a newline after each link
+    
     def add_newline_after_link(match):
         return match.group(0) + "\n"
-
-    # Regular expression to match URLs
+        
     url_pattern = r'https?://[^\s)"]+'
-
-    # Add a newline after each link
+    
     formatted_text = re.sub(url_pattern, add_newline_after_link, text)
-
+    
+    formatted_text = re.sub(r'^#+\s*', '', formatted_text, flags=re.MULTILINE)
+    formatted_text = re.sub(r'\*\*?(.*?)\*\*?', r'\1', formatted_text)
+    formatted_text = re.sub(r'__?(.*?)__?', r'\1', formatted_text)
+    
     return formatted_text.strip()
 
+@st.cache_data
 def main(query):
-    model = load_model()
+    model = load_sentence_transformer()
     headers, data = read_excel()
     vector_db = create_vector_db(data, model)
     rag_prompt = create_rag_prompt(query, vector_db, model)
@@ -93,10 +86,15 @@ def main(query):
     response = query_huggingface_api(rag_prompt)
     if response and isinstance(response, list) and len(response) > 0:
         text = response[0].get('generated_text', 'No response generated')
-        print(text)
-        text = format_text(text)
-        
-        return text
+        formatted_response = format_text(text)
+        return formatted_response
     else:
-        return "I'm sorry, I couldn't understand. Please rephrase your response"
+        return "I'm sorry, I couldn't generate a response. Please try rephrasing your question."
 
+if __name__ == "__main__":
+    st.title("Library Resource Assistant")
+    user_query = st.text_input("What would you like to know?")
+    if user_query:
+        with st.spinner("Generating response..."):
+            result = main(user_query)
+        st.write(result)
