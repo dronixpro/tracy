@@ -2,6 +2,17 @@ import chromadb
 from chromadb.utils import embedding_functions
 import pandas as pd
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
 # Initialize ChromaDB client
 client = chromadb.Client()
 
