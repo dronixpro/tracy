@@ -127,20 +127,19 @@ with st.container():
         with cols[i % 5]:
             st.markdown("<div class='category-container'>", unsafe_allow_html=True)
             if col_name in img:
-                st.image(img[col_name], use_column_width=True, output_format="PNG", class_="category-image")
+                st.image(img[col_name], use_column_width=True, output_format="PNG")
             if st.button(col_name, key=f"col_{i}", use_container_width=True):
                 st.session_state['selected_column'] = col_name
             st.markdown("</div>", unsafe_allow_html=True)
 
 # Display selected category data
-if 'selected_column' in st.session_state and st.session_state['selected_column'] != 'none':
+if 'selected_column' in st.session_state and st.session_state['selected_column'] is not None:
     st.markdown(f"<h2 class='category-title'>{st.session_state['selected_column']} Resources</h2>", unsafe_allow_html=True)
     for item in data[st.session_state['selected_column']].dropna().tolist():
         formatted_item = format_link(str(item))
         st.markdown(formatted_item, unsafe_allow_html=True)
     if st.button("Clear Selection"):
-        st.session_state['selected_column'] = 'none'
-        
+        st.session_state['selected_column'] = None
 
 
 
