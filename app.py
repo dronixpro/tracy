@@ -74,7 +74,7 @@ st.title('Nyack Library Quick Reference App')
 
 # Search functionality
 with st.container():
-    text_search = st.text_input("Search Training Material", placeholder="Enter your search query")
+    text_search = st.text_input("Search Training Material", placeholder="Enter your search query, trying using simple and direct phrases for the best results.")
     if text_search:
         results = tracyllm_main(text_search)
         st.markdown(results, unsafe_allow_html=True)
