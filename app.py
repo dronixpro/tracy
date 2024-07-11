@@ -6,7 +6,7 @@ from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
 # Page configuration
-st.set_page_config(layout="wide", page_title="Unhoused Patron Assistance", page_icon="🏠")
+st.set_page_config(layout="centered", page_title="Unhoused Patron Assistance", page_icon="🏠")
 
 # Load the Excel file
 @st.cache_data
@@ -47,19 +47,25 @@ st.markdown("""
         height: auto;
         white-space: normal !important;
         word-wrap: break-word;
-        padding: 0.5rem;
-        font-size: 0.8rem;
+        padding: 0.25rem;
+        font-size: 0.6rem;
+        min-height: 0;
     }
     .category-image {
         width: 100%;
-        max-width: 100px;
+        max-width: 50px;
         height: auto;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    .narrow-container {
+        max-width: 600px;
+        margin: auto;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # App title
+st.markdown("<div class='narrow-container'>", unsafe_allow_html=True)
 st.title('Unhoused Patron Assistance')
 
 # Search functionality
@@ -74,7 +80,7 @@ st.write("### Categories")
 cols = st.columns(3)
 for i, col_name in enumerate(data.columns[:9]):  # Limit to 9 categories
     with cols[i % 3]:
-        st.image(img.get(col_name, ''), width=100)
+        st.image(img.get(col_name, ''), width=50, use_column_width=False)
         if st.button(col_name, key=f"col_{i}", use_container_width=True):
             st.session_state['selected_column'] = col_name
 
@@ -86,3 +92,5 @@ if 'selected_column' in st.session_state and st.session_state['selected_column']
         st.markdown(formatted_item, unsafe_allow_html=True)
     if st.button("Clear Selection"):
         st.session_state['selected_column'] = None
+
+st.markdown("</div>", unsafe_allow_html=True)
