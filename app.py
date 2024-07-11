@@ -70,7 +70,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App title
-st.title('Unhoused Patron Assistance')
+st.title('Nyack Library Quick Reference App')
 
 # Search functionality
 with st.container():
