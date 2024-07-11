@@ -6,13 +6,10 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from functools import lru_cache
 import streamlit as st
-from tracysearch import search_database
-
 
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
 API_URL = "https://api-inference.huggingface.co/models/gpt2"
 SENTENCE_TRANSFORMER_MODEL = 'all-MiniLM-L6-v2'
-
 HUGGINGFACE_API_TOKEN = st.secrets["HUGGINGFACE_API_TOKEN"]
 
 @lru_cache(maxsize=1)
@@ -33,11 +30,15 @@ def read_excel():
 def create_vector_db(data, model):
     return [(" ".join(row), model.encode(" ".join(row))) for row in data]
 
-def create_rag_prompt(query, vector_db, model, top_k=3):
+def vector_search(query, vector_db, model, top_k=3):
     query_vector = model.encode(query)
     similarities = [np.dot(query_vector, entry[1]) / (np.linalg.norm(query_vector) * np.linalg.norm(entry[1])) for entry in vector_db]
     top_indices = np.argsort(similarities)[-top_k:][::-1]
-    context = "\n".join([vector_db[i][0] for i in top_indices])
+    return [{"document": vector_db[i][0], "score": similarities[i]} for i in top_indices]
+
+def create_rag_prompt(query, vector_db, model, top_k=3):
+    search_results = vector_search(query, vector_db, model, top_k)
+    context = "\n".join([result["document"] for result in search_results])
     
     return f"""Context information is below.
 ---------------------
@@ -90,8 +91,18 @@ def main(query):
         formatted_response = format_text(text)
         return formatted_response
     else:
-        formatted_response = search_database(query)
+        # Fallback to vector search
+        st.warning("Hugging Face API query failed. Falling back to vector search.")
+        vector_search_results = vector_search(query, vector_db, model)
+        formatted_response = format_vector_search_results(vector_search_results)
         return formatted_response
+
+def format_vector_search_results(results):
+    formatted_text = "Here are the top matches from our resource database:\n\n"
+    for i, result in enumerate(results, 1):
+        formatted_text += f"{i}. {result['document'][:200]}...\n"
+        formatted_text += f"   Relevance Score: {result['score']:.4f}\n\n"
+    return formatted_text
 
 if __name__ == "__main__":
     st.title("Library Resource Assistant")
