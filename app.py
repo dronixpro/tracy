@@ -6,7 +6,7 @@ from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
 # Page configuration
-st.set_page_config(layout="centered", page_title="Unhoused Patron Assistance", page_icon="🏠")
+st.set_page_config(layout="centered", page_title="Nyack Library Helper", page_icon="🏠")
 
 # Load the Excel file
 @st.cache_data
@@ -42,30 +42,34 @@ img = load_images()
 # Custom CSS
 st.markdown("""
 <style>
+    .main {
+        max-width: 800px;
+        margin: auto;
+    }
     .stButton > button {
         width: 100%;
         height: auto;
         white-space: normal !important;
         word-wrap: break-word;
         padding: 0.25rem;
-        font-size: 0.6rem;
+        font-size: 0.7rem;
         min-height: 0;
     }
     .category-image {
         width: 100%;
-        max-width: 50px;
+        max-width: 80px;
         height: auto;
         margin-bottom: 0.25rem;
     }
-    .narrow-container {
-        max-width: 600px;
-        margin: auto;
+    [data-testid="column"] {
+        width: calc(33.33% - 1rem) !important;
+        flex: 1 1 calc(33.33% - 1rem) !important;
+        min-width: calc(33.33% - 1rem) !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # App title
-st.markdown("<div class='narrow-container'>", unsafe_allow_html=True)
 st.title('Unhoused Patron Assistance')
 
 # Search functionality
@@ -76,13 +80,19 @@ with st.container():
         st.markdown(results, unsafe_allow_html=True)
 
 # Category buttons in 3x3 grid
-st.write("### Categories")
-cols = st.columns(3)
-for i, col_name in enumerate(data.columns[:9]):  # Limit to 9 categories
-    with cols[i % 3]:
-        st.image(img.get(col_name, ''), width=50, use_column_width=False)
-        if st.button(col_name, key=f"col_{i}", use_container_width=True):
-            st.session_state['selected_column'] = col_name
+with st.container():
+    columns_per_segment = 3
+    cols = st.columns(3)
+    for i, col in enumerate(cols):
+        with col:
+            for j in range(columns_per_segment):
+                index = i * columns_per_segment + j
+                if index < len(data.columns):
+                    col_name = data.columns[index]
+                    if col_name in img:
+                        st.image(img[col_name], use_column_width='auto')
+                    if st.button(col_name, key=f"col{i}_{j}", use_container_width=True):
+                        st.session_state['selected_column'] = col_name
 
 # Display selected category data
 if 'selected_column' in st.session_state and st.session_state['selected_column'] is not None:
@@ -92,5 +102,3 @@ if 'selected_column' in st.session_state and st.session_state['selected_column']
         st.markdown(formatted_item, unsafe_allow_html=True)
     if st.button("Clear Selection"):
         st.session_state['selected_column'] = None
-
-st.markdown("</div>", unsafe_allow_html=True)
