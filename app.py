@@ -100,5 +100,4 @@ if 'selected_column' in st.session_state and st.session_state['selected_column']
     for item in data[st.session_state['selected_column']].dropna().tolist():
         formatted_item = format_link(str(item))
         st.markdown(formatted_item, unsafe_allow_html=True)
-    if st.button("Clear Selection"):
-        st.session_state['selected_column'] = None
+
