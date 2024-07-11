@@ -23,7 +23,8 @@ collection.add(
     ids=ids
 )
 
-def search_database(query, n_results=3):
+def search_database(query):
+    n_results = 3
     results = collection.query(
         query_texts=[query],
         n_results=n_results
