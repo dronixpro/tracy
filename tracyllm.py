@@ -6,6 +6,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from functools import lru_cache
 import streamlit as st
+from tracysearch import search_database
 
 
 EXCEL_FILE_PATH = os.path.join(os.getcwd(), 'APP Layout.xlsx')
@@ -89,7 +90,8 @@ def main(query):
         formatted_response = format_text(text)
         return formatted_response
     else:
-        return "I'm sorry, I couldn't generate a response. Please try rephrasing your question."
+        formatted_response = search_database(query)
+        return formatted_response
 
 if __name__ == "__main__":
     st.title("Library Resource Assistant")
