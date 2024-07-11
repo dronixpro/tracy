@@ -85,23 +85,39 @@ st.markdown("""
         border-radius: 8px;
         margin-bottom: 2rem;
     }
-    .category-image {
-        max-width: 100%;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
     }
-    .category-container {
+    .category-item {
         background-color: #ffffff;
         padding: 1rem;
         border-radius: 8px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .category-image {
+        width: 100%;
+        max-width: 150px;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
     }
     .category-title {
         font-size: 1.25rem;
         font-weight: bold;
         margin-bottom: 1rem;
         color: #2c3e50;
+    }
+    @media (max-width: 768px) {
+        .category-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -120,17 +136,16 @@ with st.container():
         st.markdown("</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 
-# Category buttons
-with st.container():
-    cols = st.columns(5)
-    for i, col_name in enumerate(data.columns):
-        with cols[i % 5]:
-            st.markdown("<div class='category-container'>", unsafe_allow_html=True)
-            if col_name in img:
-                st.image(img[col_name], use_column_width=True, output_format="PNG")
-            if st.button(col_name, key=f"col_{i}", use_container_width=True):
-                st.session_state['selected_column'] = col_name
-            st.markdown("</div>", unsafe_allow_html=True)
+# Category buttons in 3x3 grid
+st.markdown("<div class='category-grid'>", unsafe_allow_html=True)
+for i, col_name in enumerate(data.columns[:9]):  # Limit to 9 categories
+    st.markdown(f"<div class='category-item'>", unsafe_allow_html=True)
+    if col_name in img:
+        st.image(img[col_name], use_column_width=True, output_format="PNG", clamp=True)
+    if st.button(col_name, key=f"col_{i}", use_container_width=True):
+        st.session_state['selected_column'] = col_name
+    st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Display selected category data
 if 'selected_column' in st.session_state and st.session_state['selected_column'] is not None:
@@ -140,10 +155,3 @@ if 'selected_column' in st.session_state and st.session_state['selected_column']
         st.markdown(formatted_item, unsafe_allow_html=True)
     if st.button("Clear Selection"):
         st.session_state['selected_column'] = None
-
-
-
-
-
-
-
