@@ -5,7 +5,8 @@ import base64
 from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
-st.set_page_config(layout="centered")
+# Page configuration
+st.set_page_config(layout="wide", page_title="Unhoused Patron Assistance", page_icon="🏠")
 
 # Load the Excel file
 @st.cache_data
@@ -38,82 +39,106 @@ def load_images():
 data = load_data()
 img = load_images()
 
-st.title('I have an unhoused patron or I need help with...')
-
+# Custom CSS
 st.markdown("""
 <style>
-    /* Button Styling */
+    .main {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .stTitle {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+        color: #2c3e50;
+    }
     .stButton > button {
-        width: auto;
-        min-width: fit-content;
-        max-width: 100%;
+        width: 100%;
         height: auto;
-        min-height: 40px;
+        min-height: 60px;
         white-space: normal !important;
         word-wrap: break-word;
-        padding: 0.5rem 1rem;
-        background-color: #67a6a5;
+        padding: 0.75rem 1rem;
+        background-color: #3498db;
         color: white;
-        font-size: 16px;
+        font-size: 1rem;
+        font-weight: 500;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .stButton > button:hover {
-        background-color: #45a049;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        background-color: #2980b9;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .stButton > button:active {
-        background-color: #a2e8e6;
+        background-color: #2574a9;
     }
-
-    /* Column Sizing */
-    [data-testid="column"] {
-        width: calc(20% - 1rem) !important;
-        flex: 1 1 calc(20% - 1rem) !important;
-        min-width: calc(20% - 1rem) !important;
+    .search-container {
+        margin-bottom: 2rem;
     }
-
-    /* Additional styling for consistency */
-    button {
-        height: auto;  /* Changed from 1em to auto for consistency with other button styles */
+    .results-container {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .category-image {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    .category-container {
+        background-color: #ffffff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    .category-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #2c3e50;
     }
 </style>
 """, unsafe_allow_html=True)
 
-def display_search_results(results):
-    st.write('---')
-    st.markdown(results, unsafe_allow_html=True)
-    st.write('---')
+# App title
+st.title('Unhoused Patron Assistance')
 
+# Search functionality
 with st.container():
-    text_search = st.text_input(label="Search Training Material", label_visibility='collapsed', placeholder="Search")
-
+    st.markdown("<div class='search-container'>", unsafe_allow_html=True)
+    text_search = st.text_input("Search Training Material", placeholder="Enter your search query")
     if text_search:
         results = tracyllm_main(text_search)
-        display_search_results(results)
+        st.markdown("<div class='results-container'>", unsafe_allow_html=True)
+        st.markdown(results, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
+# Category buttons
 with st.container():
-    columns_per_segment = 3
-    cols = st.columns(3)
+    cols = st.columns(5)
+    for i, col_name in enumerate(data.columns):
+        with cols[i % 5]:
+            st.markdown("<div class='category-container'>", unsafe_allow_html=True)
+            if col_name in img:
+                st.image(img[col_name], use_column_width=True, output_format="PNG", class_="category-image")
+            if st.button(col_name, key=f"col_{i}", use_container_width=True):
+                st.session_state['selected_column'] = col_name
+            st.markdown("</div>", unsafe_allow_html=True)
 
-    for i, col in enumerate(cols):
-        with col:
-            for j in range(columns_per_segment):
-                index = i * columns_per_segment + j
-                if index < len(data.columns):
-                    col_name = data.columns[index]
-                    if col_name in img:
-                        st.image(img[col_name], use_column_width='auto')
-                    if st.button(col_name, key=f"col{i}_{j}", use_container_width=True):
-                        st.session_state['selected_column'] = col_name
-
-with st.container():
-    if 'selected_column' in st.session_state:
-        st.write(f"### {st.session_state['selected_column']} Data")
-        for item in data[st.session_state['selected_column']].dropna().tolist():
-            formatted_item = format_link(str(item))
-            st.markdown(formatted_item, unsafe_allow_html=True)
+# Display selected category data
+if 'selected_column' in st.session_state and st.session_state['selected_column'] != 'none':
+    st.markdown(f"<h2 class='category-title'>{st.session_state['selected_column']} Resources</h2>", unsafe_allow_html=True)
+    for item in data[st.session_state['selected_column']].dropna().tolist():
+        formatted_item = format_link(str(item))
+        st.markdown(formatted_item, unsafe_allow_html=True)
+    if st.button("Clear Selection"):
         st.session_state['selected_column'] = 'none'
         
 
