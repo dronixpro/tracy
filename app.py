@@ -6,7 +6,7 @@ from functools import lru_cache
 from tracyllm import main as tracyllm_main
 
 # Page configuration
-st.set_page_config(layout="centered", page_title="Nyack Library Helper", page_icon="🏠")
+st.set_page_config(layout="centered", page_title="Nyack Library", page_icon="🏠")
 
 # Load the Excel file
 @st.cache_data
