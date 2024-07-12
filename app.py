@@ -70,11 +70,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # App title
-st.title('Nyack Library Quick Reference App')
+st.title('I have an unhoused patron or I need help with...')
 
 # Search functionality
 with st.container():
-    text_search = st.text_input("Search Training Material", placeholder="Enter your search query, trying using simple and direct phrases for the best results.")
+    text_search = st.text_input("Search Training Material", placeholder="Enter your search query.")
     if text_search:
         results = tracyllm_main(text_search)
         st.markdown(results, unsafe_allow_html=True)
